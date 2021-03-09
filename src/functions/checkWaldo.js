@@ -19,4 +19,10 @@ function checkWaldo(clickPos, charPos, aimbot) {
   }
 }
 
+// waldo at 400 / 200
+
+// but
+
+// size has been decreased to 1300 / 800
+
 export default checkWaldo;

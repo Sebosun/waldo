@@ -18,6 +18,14 @@ test("doesnt just return true", () => {
   expect(checkWaldo([500, 80], [320, 80], 20)).toBe(false);
 });
 
-test("doesnt just return true", () => {
+test("also chceks the X position", () => {
   expect(checkWaldo([320, 200], [320, 80], 20)).toBe(false);
+});
+
+test("works with floats", () => {
+  expect(checkWaldo([320, 200], [320, 54.14], 20)).toBe(false);
+});
+
+test("works with floats", () => {
+  expect(checkWaldo([320, 200], [320, 54.14], 20)).toBe(false);
 });

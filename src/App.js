@@ -1,20 +1,18 @@
 import "./App.css";
+import React from "react";
+import Header from "./components/Header";
 import Game from "./components/Game";
+import waldoImg from "./Images/level-1.jpg";
 
-function App() {
-  function returnMousePosition(e) {
-    e.preventDefault();
-    var rect = e.target.getBoundingClientRect();
-    var x = e.clientX - rect.left; //x position within the element.
-    var y = e.clientY - rect.top; //y position within the element.
-    console.log("Left? : " + x + " ; Top? : " + y + ".");
+class App extends React.Component {
+  render() {
+    return (
+      <div className="App">
+        <Header text="Test" />
+        <Game image={waldoImg} />
+      </div>
+    );
   }
-
-  return (
-    <div onClick={returnMousePosition} className="App">
-      <Game text="Test" />
-    </div>
-  );
 }
 
 export default App;

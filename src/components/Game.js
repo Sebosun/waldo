@@ -1,9 +1,10 @@
 import React from "react";
+import "./Game.css";
 
 export default function Game(props) {
   return (
-    <div>
-      <h1>{props.text}</h1>
+    <div className="gameContainer">
+      <img src={props.image} alt="waldo" />
     </div>
   );
 }
