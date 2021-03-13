@@ -3,29 +3,59 @@ import "./Game.css";
 
 export default function Game(props) {
   const [display, setDisplay] = useState(false);
+  const [relSize, setRelSize] = useState([]);
   const [displayStyle, setDisplayStyle] = useState({
     position: "absolute",
     top: 0,
     left: 0,
   });
 
+  console.log(props);
+  // handles the dropdown menu, so that it appears under the clicked position
   function changeDisplay(event) {
-    console.log(event);
+    console.log(event.pageY, event.pageX);
+
+    // gets the rel size of the image
+    const rect = event.target.getBoundingClientRect();
+    const x = event.clientX - rect.left; //x position within the element.
+    const y = event.clientY - rect.top; //y position within the element.
+    console.log(y, x);
+    setRelSize([y, x]);
     setDisplayStyle({ ...displayStyle, top: event.pageY, left: event.pageX });
-    console.log(displayStyle);
     setDisplay(!display);
   }
 
   return (
-    <div onClick={(event) => changeDisplay(event)} className="gameContainer">
+    <div className="gameContainer">
       {display ? (
         <div className="dropMenu" style={displayStyle}>
-          <button>Waldo</button>
-          <button>Baldo</button>
-          <button>Wizard</button>
+          <button
+            onClick={(e) => {
+              setDisplay(!display);
+              props.submitChoice(relSize);
+            }}
+          >
+            Waldo
+          </button>
+          <button
+            onClick={(e) => {
+              setDisplay(!display);
+              props.submitChoice(relSize);
+            }}
+          >
+            Yellow Guy
+          </button>
+          <button
+            onClick={(e) => {
+              setDisplay(!display);
+              props.submitChoice(relSize);
+            }}
+          >
+            Wizard
+          </button>
         </div>
       ) : null}
-      <div>
+      <div onClick={(event) => changeDisplay(event)}>
         <img src={props.image} alt="waldo" />
       </div>
     </div>

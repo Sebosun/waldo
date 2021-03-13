@@ -8,19 +8,18 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {};
+    this.submitChoice = this.submitChoice.bind();
   }
 
+  submitChoice(position) {
+    console.log(position);
+  }
   render() {
     return (
       <div className="App">
         <Header text="Waldo Game" />
 
-        <Game
-          showMenu={this.showMenu}
-          charMenu={this.charMenu}
-          displayMenu={this.state.showMenu}
-          image={waldoImg}
-        />
+        <Game submitChoice={this.submitChoice} image={waldoImg} />
       </div>
     );
   }
