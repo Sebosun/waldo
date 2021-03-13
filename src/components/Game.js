@@ -19,7 +19,7 @@ export default function Game(props) {
   return (
     <div onClick={(event) => changeDisplay(event)} className="gameContainer">
       {display ? (
-        <div style={displayStyle}>
+        <div className="dropMenu" style={displayStyle}>
           <button>Waldo</button>
           <button>Baldo</button>
           <button>Wizard</button>
