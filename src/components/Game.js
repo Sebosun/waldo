@@ -10,7 +10,6 @@ export default function Game(props) {
     left: 0,
   });
 
-  console.log(props);
   // handles the dropdown menu, so that it appears under the clicked position
   function changeDisplay(event) {
     console.log(event.pageY, event.pageX);
@@ -32,7 +31,7 @@ export default function Game(props) {
           <button
             onClick={(e) => {
               setDisplay(!display);
-              props.submitChoice(relSize);
+              props.submitChoice(relSize, "Waldo");
             }}
           >
             Waldo
@@ -40,7 +39,7 @@ export default function Game(props) {
           <button
             onClick={(e) => {
               setDisplay(!display);
-              props.submitChoice(relSize);
+              props.submitChoice(relSize, "Yellow");
             }}
           >
             Yellow Guy
@@ -48,7 +47,7 @@ export default function Game(props) {
           <button
             onClick={(e) => {
               setDisplay(!display);
-              props.submitChoice(relSize);
+              props.submitChoice(relSize, "Wizard");
             }}
           >
             Wizard
