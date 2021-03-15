@@ -13,9 +13,11 @@ class App extends React.Component {
     super();
     this.state = {
       positions: [],
-      waldoPos: [392, 545],
-      yellowPos: [382, 248.5],
-      wizardPos: [386, 649],
+      found: {
+        waldo: false,
+        odlaw: false,
+        wizard: false,
+      },
     };
     this.submitChoice = this.submitChoice.bind(this);
   }
@@ -38,19 +40,31 @@ class App extends React.Component {
   submitChoice(position, character) {
     // const change = calcDisplayChanges();
     if (character === "Waldo") {
-      console.log(checkWaldo(position, this.state.positions[0].waldo, 40));
+      if (checkWaldo(position, this.state.positions[0].waldo, 40)) {
+        this.setState((prevState) => {
+          return { found: { ...prevState.found, waldo: true } };
+        });
+        console.log(this.state);
+      }
     } else if (character === "Odlaw") {
-      console.log(checkWaldo(position, this.state.positions[0].odlaw, 40));
+      if (checkWaldo(position, this.state.positions[0].odlaw, 40)) {
+        this.setState((prevState) => {
+          return { found: { ...prevState.found, odlaw: true } };
+        });
+      }
     } else if (character === "Wizard") {
-      console.log(checkWaldo(position, this.state.positions[0].wizard, 40));
+      if (checkWaldo(position, this.state.positions[0].wizard, 40)) {
+        this.setState((prevState) => {
+          return { found: { ...prevState.found, wizard: true } };
+        });
+      }
     }
   }
 
   render() {
     return (
       <div className="App">
-        <Header text="Waldo Game" />
-
+        <Header found={this.state.found} text="Waldo Game" />
         <Game submitChoice={this.submitChoice} image={waldoImg} />
       </div>
     );
