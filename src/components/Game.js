@@ -39,10 +39,10 @@ export default function Game(props) {
           <button
             onClick={(e) => {
               setDisplay(!display);
-              props.submitChoice(relSize, "Yellow");
+              props.submitChoice(relSize, "Odlaw");
             }}
           >
-            Yellow Guy
+            Odlaw
           </button>
           <button
             onClick={(e) => {
