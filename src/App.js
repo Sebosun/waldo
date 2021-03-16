@@ -2,6 +2,7 @@ import "./App.css";
 import React from "react";
 import Header from "./components/Header";
 import Game from "./components/Game";
+import Won from "./components/Won";
 import waldoImg from "./Images/level-1.jpg";
 import checkWaldo from "./functions/checkWaldo";
 import calcDisplayChanges from "./functions/calcDisplayChanges";
@@ -12,34 +13,22 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      gameStarted: false,
       positions: [],
       found: {
         waldo: false,
         odlaw: false,
         wizard: false,
       },
+      won: false,
+      gameStarted: false,
       userId: null,
     };
     this.submitChoice = this.submitChoice.bind(this);
     this.trackTime = this.trackTime.bind(this);
     this.checkWin = this.checkWin.bind(this);
+    this.calcTime = this.calcTime.bind(this);
   }
   //grabs the character positions from the firebase
-
-  componentDidMount = () => {
-    firebase
-      .firestore()
-      .collection("waldo")
-      .onSnapshot((serverUpdate) => {
-        const positions = serverUpdate.docs.map((_doc) => {
-          const data = _doc.data();
-          return data;
-        });
-        this.setState({ positions: positions });
-      });
-    this.trackTime();
-  };
 
   // adds a new "user" with unique id to firebase
   // saves the id to state, so later we can calculate their time
@@ -49,9 +38,10 @@ class App extends React.Component {
       .collection("time-elapsed")
       .add({
         userName: "",
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        timestampStart: firebase.firestore.FieldValue.serverTimestamp(),
+        timestampEnd: null,
       });
-    // this.setstate({ userid: newuserclick.id });
+    this.setState({ userId: newUserClick.id });
   };
 
   // verifies whether the position has been 'hit'
@@ -76,10 +66,53 @@ class App extends React.Component {
       }
     }
   }
+  componentDidMount = () => {
+    firebase
+      .firestore()
+      .collection("waldo")
+      .onSnapshot((serverUpdate) => {
+        const positions = serverUpdate.docs.map((_doc) => {
+          const data = _doc.data();
+          return data;
+        });
+        this.setState({ positions: positions });
+      });
+    // this.trackTime();
+  };
 
   componentDidUpdate() {
-    if (this.checkWin(this.state.found)) {
+    // second statement needs to be added to avoid infinite regress
+    if (this.checkWin(this.state.found) && this.state.won !== true) {
+      this.setState({ won: true });
+      firebase
+        .firestore()
+        .collection("time-elapsed")
+        .doc(this.state.userId)
+        .update({
+          timestampEnd: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+        .then(() => this.calcTime());
     }
+    // this.calcTime();
+  }
+
+  calcTime() {
+    firebase
+      .firestore()
+      .collection("time-elapsed")
+      .doc(`${this.state.userId}`)
+      .get()
+      .then((doc) => {
+        console.log(doc.data().timestampEnd);
+        const secondsStarted = doc.data().timestampStart.seconds;
+        const startDate = new Date(secondsStarted * 1000);
+        const secondsEnded = doc.data().timestampEnd.seconds;
+        const endDate = new Date(secondsEnded * 1000);
+        console.log(endDate - startDate);
+      })
+      .catch((error) => {
+        console.log("Error getting time");
+      });
   }
 
   //checks if game has been won
@@ -91,13 +124,20 @@ class App extends React.Component {
     return arr.every((value) => value);
   };
 
+  // TODO Pop-up prompt after the game has been won - > upload score to the database
+  // TODO Leaderboards
   render() {
     return (
       <div className="App">
         {this.state.gameStarted ? (
           <div>
             <Header found={this.state.found} text="Waldo Game" />
-            <Game submitChoice={this.submitChoice} image={waldoImg} />
+            <Game
+              trackTime={this.trackTime}
+              submitChoice={this.submitChoice}
+              image={waldoImg}
+            />
+            {this.state.won ? <Won /> : null}
           </div>
         ) : (
           <div>
