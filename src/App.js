@@ -23,6 +23,7 @@ class App extends React.Component {
     };
     this.submitChoice = this.submitChoice.bind(this);
     this.trackTime = this.trackTime.bind(this);
+    this.checkWin = this.checkWin.bind(this);
   }
   //grabs the character positions from the firebase
 
@@ -50,7 +51,7 @@ class App extends React.Component {
         userName: "",
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       });
-    this.setState({ userId: newUserClick.id });
+    // this.setstate({ userid: newuserclick.id });
   };
 
   // verifies whether the position has been 'hit'
@@ -75,6 +76,20 @@ class App extends React.Component {
       }
     }
   }
+
+  componentDidUpdate() {
+    if (this.checkWin(this.state.found)) {
+    }
+  }
+
+  //checks if game has been won
+  checkWin = (obj) => {
+    let arr = [];
+    for (const prop in obj) {
+      arr.push(obj[prop]);
+    }
+    return arr.every((value) => value);
+  };
 
   render() {
     return (

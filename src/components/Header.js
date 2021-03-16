@@ -8,7 +8,7 @@ class Header extends React.Component {
         <div>{this.props.text}</div>
 
         {this.props.found ? (
-          <div>
+          <div className="characters">
             {this.props.found.waldo ? (
               <div style={{ textDecoration: "line-through" }}>Waldo</div>
             ) : (
