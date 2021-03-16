@@ -12,15 +12,19 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
+      gameStarted: false,
       positions: [],
       found: {
         waldo: false,
         odlaw: false,
         wizard: false,
       },
+      userId: null,
     };
     this.submitChoice = this.submitChoice.bind(this);
+    this.trackTime = this.trackTime.bind(this);
   }
+  //grabs the character positions from the firebase
 
   componentDidMount = () => {
     firebase
@@ -29,22 +33,33 @@ class App extends React.Component {
       .onSnapshot((serverUpdate) => {
         const positions = serverUpdate.docs.map((_doc) => {
           const data = _doc.data();
-          console.log(data);
           return data;
         });
         this.setState({ positions: positions });
-        console.log(this.state.positions);
       });
+    this.trackTime();
   };
 
+  // adds a new "user" with unique id to firebase
+  // saves the id to state, so later we can calculate their time
+  trackTime = async () => {
+    const newUserClick = await firebase
+      .firestore()
+      .collection("time-elapsed")
+      .add({
+        userName: "",
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+    this.setState({ userId: newUserClick.id });
+  };
+
+  // verifies whether the position has been 'hit'
   submitChoice(position, character) {
-    // const change = calcDisplayChanges();
     if (character === "Waldo") {
       if (checkWaldo(position, this.state.positions[0].waldo, 40)) {
         this.setState((prevState) => {
           return { found: { ...prevState.found, waldo: true } };
         });
-        console.log(this.state);
       }
     } else if (character === "Odlaw") {
       if (checkWaldo(position, this.state.positions[0].odlaw, 40)) {
@@ -64,8 +79,29 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <Header found={this.state.found} text="Waldo Game" />
-        <Game submitChoice={this.submitChoice} image={waldoImg} />
+        {this.state.gameStarted ? (
+          <div>
+            <Header found={this.state.found} text="Waldo Game" />
+            <Game submitChoice={this.submitChoice} image={waldoImg} />
+          </div>
+        ) : (
+          <div>
+            <Header text="Waldo Game" />
+            {/* #TODO ? make a separte component out of this? */}
+            <div>
+              <button
+                onClick={() =>
+                  this.setState({
+                    gameStarted: !this.state.gameStarted,
+                  })
+                }
+              >
+                Start Game{" "}
+              </button>
+              <button> Show leaderboards </button>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
