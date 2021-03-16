@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Game.css";
 
 export default function Game(props) {
@@ -23,6 +23,11 @@ export default function Game(props) {
     setDisplayStyle({ ...displayStyle, top: event.pageY, left: event.pageX });
     setDisplay(!display);
   }
+
+  // when the Game loads, starts the timer
+  useEffect(() => {
+    props.trackTime();
+  }, []);
 
   return (
     <div className="gameContainer">
