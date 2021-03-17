@@ -28,6 +28,7 @@ class App extends React.Component {
     this.trackTime = this.trackTime.bind(this);
     this.checkWin = this.checkWin.bind(this);
     this.calcTime = this.calcTime.bind(this);
+    this.addToLeaderboards = this.addToLeaderboards.bind(this);
   }
   //grabs the character positions from the firebase
 
@@ -68,6 +69,7 @@ class App extends React.Component {
     }
   }
 
+  // get the waldo positions from the server on component load
   componentDidMount = () => {
     firebase
       .firestore()
@@ -81,7 +83,7 @@ class App extends React.Component {
       });
     // this.trackTime();
   };
-
+  // on update check if the winning condition has been met
   componentDidUpdate() {
     // second statement needs to be added to avoid infinite regress
     if (this.checkWin(this.state.found) && this.state.won !== true) {
@@ -97,7 +99,7 @@ class App extends React.Component {
     }
     // this.calcTime();
   }
-
+  //calculates how much time passed since the start of the game till it was completed
   calcTime() {
     firebase
       .firestore()
@@ -105,12 +107,14 @@ class App extends React.Component {
       .doc(`${this.state.userId}`)
       .get()
       .then((doc) => {
+        // This is messy, but works.
         console.log(doc.data().timestampEnd);
         const secondsStarted = doc.data().timestampStart.seconds;
         const startDate = new Date(secondsStarted * 1000);
         const secondsEnded = doc.data().timestampEnd.seconds;
         const endDate = new Date(secondsEnded * 1000);
         const timeElapsed = endDate - startDate;
+
         const microSecStart = doc.data().timestampStart.nanoseconds;
         const microSecEnd = doc.data().timestampEnd.nanoseconds;
         const microElapsed = (microSecEnd - microSecStart) / 1000000000;
@@ -123,7 +127,8 @@ class App extends React.Component {
         console.log("Error getting time", error);
       });
   }
-
+  // runs through an object, creates an array from it and checks
+  // if every arr item is true
   checkWin = (obj) => {
     let arr = [];
     for (const prop in obj) {
@@ -134,6 +139,17 @@ class App extends React.Component {
 
   // TODO Pop-up prompt after the game has been won - > upload score to the database
   // TODO Leaderboards
+
+  addToLeaderboards(event, name) {
+    event.preventDefault();
+    const leaderboards = firebase.firestore().collection("leaderboards");
+    leaderboards.add({
+      userName: name,
+      time: this.state.time,
+      userId: this.state.userId,
+    });
+  }
+
   render() {
     return (
       <div className="App">
@@ -145,7 +161,12 @@ class App extends React.Component {
               submitChoice={this.submitChoice}
               image={waldoImg}
             />
-            {this.state.won ? <Won time={this.state.time} /> : null}
+            {this.state.won ? (
+              <Won
+                time={this.state.time}
+                addToLeaderboards={this.addToLeaderboards}
+              />
+            ) : null}
           </div>
         ) : (
           <div>

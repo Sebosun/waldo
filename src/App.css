@@ -1,3 +1,14 @@
 body{
   background-color: dimgrey;
 }
+
+.mainMenu{
+  margin: auto;
+  text-align: center;
+  width: 50%;
+  padding-top: 5em;
+}
+
+.mainMenu>button{
+  padding-left: 10px;
+}

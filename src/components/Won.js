@@ -12,8 +12,8 @@ export default function Won(props) {
     <div>
       <div>You won, congrats!</div>
       <div>You have finished in {props.time} seconds !</div>
-      <form>
-        <label onSubmit={() => console.log("dupa")}>
+      <form onSubmit={(e) => props.addToLeaderboards(e, name)}>
+        <label>
           Submit your score!
           <br />
           <input
