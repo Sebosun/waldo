@@ -11,8 +11,9 @@ export default function Won(props) {
   return (
     <div>
       <div>You won, congrats!</div>
+      <div>You have finished in {props.time} seconds !</div>
       <form>
-        <label>
+        <label onSubmit={() => console.log("dupa")}>
           Submit your score!
           <br />
           <input

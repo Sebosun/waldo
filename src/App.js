@@ -22,6 +22,7 @@ class App extends React.Component {
       won: false,
       gameStarted: false,
       userId: null,
+      time: null,
     };
     this.submitChoice = this.submitChoice.bind(this);
     this.trackTime = this.trackTime.bind(this);
@@ -66,6 +67,7 @@ class App extends React.Component {
       }
     }
   }
+
   componentDidMount = () => {
     firebase
       .firestore()
@@ -108,14 +110,20 @@ class App extends React.Component {
         const startDate = new Date(secondsStarted * 1000);
         const secondsEnded = doc.data().timestampEnd.seconds;
         const endDate = new Date(secondsEnded * 1000);
-        console.log(endDate - startDate);
+        const timeElapsed = endDate - startDate;
+        const microSecStart = doc.data().timestampStart.nanoseconds;
+        const microSecEnd = doc.data().timestampEnd.nanoseconds;
+        const microElapsed = (microSecEnd - microSecStart) / 1000000000;
+
+        let realTimePassed = timeElapsed / 1000 + microElapsed;
+        realTimePassed = Math.floor(realTimePassed * 100) / 100;
+        this.setState({ time: realTimePassed });
       })
       .catch((error) => {
-        console.log("Error getting time");
+        console.log("Error getting time", error);
       });
   }
 
-  //checks if game has been won
   checkWin = (obj) => {
     let arr = [];
     for (const prop in obj) {
@@ -137,13 +145,13 @@ class App extends React.Component {
               submitChoice={this.submitChoice}
               image={waldoImg}
             />
-            {this.state.won ? <Won /> : null}
+            {this.state.won ? <Won time={this.state.time} /> : null}
           </div>
         ) : (
           <div>
             <Header text="Waldo Game" />
             {/* #TODO ? make a separte component out of this? */}
-            <div>
+            <div className="mainMenu">
               <button
                 onClick={() =>
                   this.setState({
