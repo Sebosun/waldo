@@ -137,7 +137,7 @@ class App extends React.Component {
     return arr.every((value) => value);
   };
 
-  // TODO Pop-up prompt after the game has been won - > upload score to the database
+  // DONE-  TODO Pop-up prompt after the game has been won - > upload score to the database
   // TODO Leaderboards
 
   addToLeaderboards(event, name) {
