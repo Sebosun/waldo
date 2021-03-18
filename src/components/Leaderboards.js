@@ -22,7 +22,6 @@ export default function Leaderboards(props) {
 
   useEffect(() => {
     loadScores();
-    console.log(leader);
   }, []);
 
   return (
