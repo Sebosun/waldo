@@ -3,11 +3,13 @@ import React from "react";
 import Header from "./components/Header";
 import Game from "./components/Game";
 import Won from "./components/Won";
+import Leaderboads from "./components/Leaderboards";
 import waldoImg from "./Images/level-1.jpg";
 import checkWaldo from "./functions/checkWaldo";
 import calcDisplayChanges from "./functions/calcDisplayChanges";
 
 import { firebase } from "@firebase/app";
+import Leaderboards from "./components/Leaderboards";
 
 class App extends React.Component {
   constructor() {
@@ -21,6 +23,7 @@ class App extends React.Component {
       },
       won: false,
       gameStarted: false,
+      showLeaderboards: false,
       userId: null,
       time: null,
     };
@@ -29,6 +32,7 @@ class App extends React.Component {
     this.checkWin = this.checkWin.bind(this);
     this.calcTime = this.calcTime.bind(this);
     this.addToLeaderboards = this.addToLeaderboards.bind(this);
+    this.showLeaderboards = this.showLeaderboards.bind(this);
   }
   //grabs the character positions from the firebase
 
@@ -150,6 +154,10 @@ class App extends React.Component {
     });
   }
 
+  showLeaderboards() {
+    this.setState({ showLeaderboards: !this.state.showLeaderboards });
+  }
+
   render() {
     return (
       <div className="App">
@@ -168,7 +176,7 @@ class App extends React.Component {
               />
             ) : null}
           </div>
-        ) : (
+        ) : !this.state.showLeaderboards ? (
           <div>
             <Header text="Waldo Game" />
             {/* #TODO ? make a separte component out of this? */}
@@ -182,8 +190,17 @@ class App extends React.Component {
               >
                 Start Game{" "}
               </button>
-              <button> Show leaderboards </button>
+              <button onClick={() => this.showLeaderboards()}>
+                {" "}
+                Show leaderboards{" "}
+              </button>
             </div>
+          </div>
+        ) : (
+          <div>
+            {" "}
+            <Header text="Leaderboards" />
+            <Leaderboards />
           </div>
         )}
       </div>
