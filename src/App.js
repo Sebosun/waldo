@@ -200,7 +200,7 @@ class App extends React.Component {
           <div>
             {" "}
             <Header text="Leaderboards" />
-            <Leaderboards />
+            <Leaderboards showLeaderboards={this.showLeaderboards} />
           </div>
         )}
       </div>
