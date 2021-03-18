@@ -3,11 +3,8 @@ import React from "react";
 import Header from "./components/Header";
 import Game from "./components/Game";
 import Won from "./components/Won";
-import Leaderboads from "./components/Leaderboards";
 import waldoImg from "./Images/level-1.jpg";
 import checkWaldo from "./functions/checkWaldo";
-import calcDisplayChanges from "./functions/calcDisplayChanges";
-
 import { firebase } from "@firebase/app";
 import Leaderboards from "./components/Leaderboards";
 
@@ -33,6 +30,7 @@ class App extends React.Component {
     this.calcTime = this.calcTime.bind(this);
     this.addToLeaderboards = this.addToLeaderboards.bind(this);
     this.showLeaderboards = this.showLeaderboards.bind(this);
+    this.stopGame = this.stopGame.bind(this);
   }
   //grabs the character positions from the firebase
 
@@ -158,28 +156,33 @@ class App extends React.Component {
     this.setState({ showLeaderboards: !this.state.showLeaderboards });
   }
 
+  stopGame() {
+    this.setState({ gameStarted: !this.state.gameStarted });
+  }
+
   render() {
     return (
       <div className="App">
         {this.state.gameStarted ? (
           <div>
-            <Header found={this.state.found} text="Waldo Game" />
+            <Header found={this.state.found} text="Characters found: " />
+            {this.state.won ? (
+              <Won
+                time={this.state.time}
+                addToLeaderboards={this.addToLeaderboards}
+                stopGame={this.stopGame}
+                showLeaderboards={this.showLeaderboards}
+              />
+            ) : null}
             <Game
               trackTime={this.trackTime}
               submitChoice={this.submitChoice}
               image={waldoImg}
             />
-            {this.state.won ? (
-              <Won
-                time={this.state.time}
-                addToLeaderboards={this.addToLeaderboards}
-              />
-            ) : null}
           </div>
         ) : !this.state.showLeaderboards ? (
           <div>
             <Header text="Waldo Game" />
-            {/* #TODO ? make a separte component out of this? */}
             <div className="mainMenu">
               <button
                 onClick={() =>
